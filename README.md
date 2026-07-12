@@ -15,14 +15,13 @@
 
 ## 安装
 
-把本目录整个复制到全局插件目录(跨库生效):
+把本目录整个复制到 Forsion 插件目录:
 
 ```
-~/.forsion/amadeus/plugins/activitywatch/
+~/.forsion/plugins/activitywatch/
 ```
 
-或某个库内 `<vault>/.amadeus/plugins/activitywatch/`。设置 → 插件里可启停;
-⌘K「ActivityWatch：检测连接状态」可验证连接。
+设置 → Forsion → 社区插件里可启停;⌘K「ActivityWatch：检测连接状态」可验证连接。
 
 ## 隐私
 
