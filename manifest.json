@@ -1,0 +1,8 @@
+{
+  "id": "activitywatch",
+  "name": "ActivityWatch 系统活动",
+  "version": "1.0.0",
+  "apiVersion": 1,
+  "description": "把本机 ActivityWatch(localhost:5600)的窗口焦点数据折叠进 Forsion 活动日志,让 Muse 知道你在电脑上用什么。需自行安装运行 ActivityWatch;数据只写本地日志,绝不上云。",
+  "main": "main.js"
+}
