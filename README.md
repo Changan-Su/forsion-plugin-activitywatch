@@ -10,7 +10,9 @@
 
 ## 前置
 
-自行安装并运行 [ActivityWatch](https://activitywatch.net)(免费开源,数据全在本机)。
+需要本机安装并运行 [ActivityWatch](https://activitywatch.net)(免费开源,数据全在本机)。
+**设置 → Forsion → 社区插件 → 点开本插件详情页,「依赖应用」区可一键安装并检测连接**
+(manifest 的 `requiresApp: "activitywatch"` 声明,由宿主白名单驱动)。
 插件每分钟轮询它的本地 API(`localhost:5600`),未运行时静默待机。
 
 ## 安装
