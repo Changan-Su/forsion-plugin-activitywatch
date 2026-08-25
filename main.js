@@ -81,10 +81,26 @@ function foldFocus(evs) {
   return out.filter((s) => s.secs >= num('minFocusS'))
 }
 
+// 通知兼容层:新宿主(2026-07-23+)走右上角通知 ctx.notify(可按插件静音),老宿主回落底部吐司。
+const say = (m, level) => (ctx.notify ? ctx.notify(m, { level }) : ctx.app.notify(m))
+
+// 全局状态栏项(2026-07-23 起;老宿主无此 API,可选链自动降级为无状态项):
+// 桥的连接状态一目了然;持续状态写状态栏(handle.update),不刷通知。点击即检测连接。
+const sb = ctx.registerStatusItem?.({
+  id: 'aw',
+  side: 'right',
+  text: '⏱ …',
+  title: 'ActivityWatch 活动记录桥(点击检测连接)',
+  onClick: () => { void awStatus() },
+})
+
 async function poll() {
   try {
     const { win } = await pickBuckets()
-    if (!win) return
+    if (!win) { // AW 在线但窗口监控桶缺席:状态项别停在「…」,把原因写出来
+      sb?.update({ text: '⏱ !', title: 'ActivityWatch 在线但 aw-watcher-window 未运行(点击检测连接)' })
+      return
+    }
     const sinceMs = Number(localStorage.getItem(LS_SYNC)) || (Date.now() - 15 * 60_000) // 首次只回看 15min
     const endMs = Date.now() - num('endLagS') * 1000
     if (endMs <= sinceMs) return
@@ -93,23 +109,28 @@ async function poll() {
       ctx.activity?.log?.('focus', { app: s.app, m: Math.round(s.secs / 60) || undefined, text: s.title })
     }
     localStorage.setItem(LS_SYNC, String(endMs))
-  } catch { /* ActivityWatch 不在线:静默待机,下一轮重试 */ }
+    sb?.update({ text: '⏱', title: `ActivityWatch 已连接 · 上次同步 ${new Date(endMs).toLocaleTimeString()}` })
+  } catch { /* ActivityWatch 不在线:静默待机,下一轮重试 */
+    sb?.update({ text: '⏱ 离线', title: 'ActivityWatch 未运行,待机重试(点击检测连接)' })
+  }
+}
+
+async function awStatus() {
+  try {
+    const { win } = await pickBuckets()
+    say(win
+      ? 'ActivityWatch 已连接,窗口焦点定期同步进活动日志'
+      : 'ActivityWatch 在线但没有窗口监控桶(aw-watcher-window 未运行?)', win ? 'success' : 'warning')
+  } catch {
+    say('未检测到 ActivityWatch:请安装并运行 activitywatch.net(免费开源,数据全在本机)', 'warning')
+  }
 }
 
 ctx.registerCommand({
   id: 'aw-status',
   title: 'ActivityWatch：检测连接状态',
   keywords: 'activitywatch aw 系统活动 电脑 监控 status',
-  run: async () => {
-    try {
-      const { win } = await pickBuckets()
-      ctx.app.notify(win
-        ? 'ActivityWatch 已连接,窗口焦点定期同步进活动日志'
-        : 'ActivityWatch 在线但没有窗口监控桶(aw-watcher-window 未运行?)')
-    } catch {
-      ctx.app.notify('未检测到 ActivityWatch:请安装并运行 activitywatch.net(免费开源,数据全在本机)')
-    }
-  },
+  run: () => { void awStatus() },
 })
 
 // setTimeout 自排程(而非 setInterval):每轮取最新的轮询间隔设置,改动下一轮生效。

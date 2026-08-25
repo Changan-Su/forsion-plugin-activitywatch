@@ -38,3 +38,11 @@
 ```
 node check.mjs
 ```
+
+## 开发纪律(照抄本仓写新插件的人必读)
+
+- **命令/斜杠 id 必须带插件前缀**(本仓即 `aw-status`):id 处于全局命名空间,裸 `start`/`status` 两个插件一撞就互相顶掉。成就系列/活动事件不用前缀(宿主自动加 `plugin:<id>:`)。
+- **时间纪律**:插件内取「现在」一律 `Date.now()`,本地日期用 `new Date(Date.now())` 推导——check.mjs 靠覆写 `Date.now` 冻钟,裸 `new Date()` 冻不住;轮询用 setTimeout 自排程(每轮现读设置),别用 setInterval。
+- **设置值全是字符串**:`registerSetting` 的值存 `localStorage plugin.<插件id>.<key>`(boolean 存 `'true'/'false'`),无变更通知——用时现读,下一轮生效。
+- **自检模式**:`new Function('ctx', src)(mockCtx)` 宿主同款执行 + 假定时器(收集 setTimeout 手动触发)+ mock 存储与网络,`node check.mjs` 一条命令回归。发布插件请带上你的 check.mjs。
+- 较新的贡献点(`ctx.registerView` 自定义视图、manifest `onboarding` 首启引导)旧宿主可能没有——分发的插件调用前判断存在性(`ctx.registerView?.(…)`),与本仓对 `ctx.activity?.` 的处理同款。
