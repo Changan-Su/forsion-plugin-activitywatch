@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title">
+  <title id="title">ActivityWatch 系统活动 — Activity dial</title>
+  <!-- Original Forsion plugin identity artwork, 2026-10-05. -->
+  <defs><linearGradient id="tile" x1="28" y1="12" x2="222" y2="252" gradientUnits="userSpaceOnUse"><stop stop-color="#355651"/><stop offset="1" stop-color="#1c3734"/></linearGradient></defs>
+  <rect x="4" y="4" width="248" height="248" rx="58" fill="url(#tile)"/>
+  <g style="--ink:#eeefda;--accent:#a2c6ac;--cut:#1c3734" fill="none" stroke="var(--ink)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="128" cy="126" r="71"/>
+    <path d="M128 78v39l25 15"/>
+    <path d="M82 169v-20m28 26v-25m28 25v-17m28 7v-22" stroke="var(--accent)" stroke-width="12"/>
+    <path d="M72 109h2m108 0h2" stroke-width="8"/>
+  </g>
+</svg>
